@@ -5,33 +5,33 @@ pedidos = [
 
 ##  CONEXÃO COM MYsql
 
-import mysql.connector
-from mysql.connector import Error
+#import mysql.connector
+# from mysql.connector import Error
 
-def conectar():
-    try:
-        conexao = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='root',
-            database='pizzaria_expotech'
-        )
+# def conectar():
+#     try:
+#         conexao = mysql.connector.connect(
+#             host='localhost',
+#             user='root',
+#             password='root',
+#             database='pizzaria_expotech'
+#         )
 
-        if conexao.is_connected():
-            print("Conectado ao MySQL com sucesso!")
-            return conexao
+#         if conexao.is_connected():
+#             print("Conectado ao MySQL com sucesso!")
+#             return conexao
 
-    except Error as e:
-        print(f"Erro ao conectar: {e}")
-        return None
+#     except Error as e:
+#         print(f"Erro ao conectar: {e}")
+#         return None
 
 
-def fechar_conexao(conexao):
-    if conexao and conexao.is_connected():
-        conexao.close()
-        print("Conexão encerrada.")
+# def fechar_conexao(conexao):
+#     if conexao and conexao.is_connected():
+#         conexao.close()
+#         print("Conexão encerrada.")
 
-conexao = conectar()
+# conexao = conectar()
   #### CONEXÃO MYSQL ACIMA
 
 
@@ -123,7 +123,12 @@ while(opcao != '0'):
             novo_nome = input('novo_nome:')
             novo_preco = float(input('novo_preco:'))
             atualizarPedido(indice, {'nome': novo_nome, 'preco': novo_preco})
-    
+        else:
+             print('pedido não encontrado!')
+
+
+
+        
     elif(opcao == '5'): 
          print()
          print('REMOVER PEDIDO ========================')
