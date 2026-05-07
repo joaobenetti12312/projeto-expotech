@@ -5,44 +5,63 @@ pedidos = [
 
 ##  CONEXÃO COM MYsql
 
-#import mysql.connector
-# from mysql.connector import Error
+import mysql.connector
+from mysql.connector import Error
 
-# def conectar():
-#     try:
-#         conexao = mysql.connector.connect(
-#             host='localhost',
-#             user='root',
-#             password='root',
-#             database='pizzaria_expotech'
-#         )
+def conectar():
+    try:
+        conexao = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='1234',
+            database='teste_pizzaria'
+        )
 
-#         if conexao.is_connected():
-#             print("Conectado ao MySQL com sucesso!")
-#             return conexao
+        if conexao.is_connected():
+            print("Conectado ao MySQL com sucesso!")
+            return conexao
 
-#     except Error as e:
-#         print(f"Erro ao conectar: {e}")
-#         return None
+    except Error as e:
+        print(f"Erro ao conectar: {e}")
+        return None
 
 
-# def fechar_conexao(conexao):
-#     if conexao and conexao.is_connected():
-#         conexao.close()
-#         print("Conexão encerrada.")
+def fechar_conexao(conexao):
+    if conexao and conexao.is_connected():
+        conexao.close()
+        print("Conexão encerrada.")
 
-# conexao = conectar()
   #### CONEXÃO MYSQL ACIMA
 
+############################################################# testes puxando cardapio do MYsql
 
-########## VER SE CONECTOU CERTO
 
-#if conexao:
-#    print("Banco conectado com sucesso!")
-#else:
- #   print("Falha na conexão!")
 
-        ## TESTE DE CONEXÃO ACIMA
+def mostrar_cardapio():
+
+    print("ENTROU NA FUNÇÃO")
+
+    conexao = conectar()
+
+    #print(conexao)
+
+    cursor = conexao.cursor()
+
+    sql = "SELECT * FROM cardapio"
+
+    cursor.execute(sql)
+
+    pizzas = cursor.fetchall()
+
+    #print(pizzas)
+
+    for pizza in pizzas:
+        print(f"ID: {pizza[0]} | Nome: {pizza[1]} | Preço: {pizza[2]}")
+
+        
+
+###################################################################################################
+
 
 def listarPedidos():
     if(len(pedidos) == 0):
@@ -82,20 +101,29 @@ while(opcao != '0'):
     print('========================================')
     print('               MENU PIZZARIA')
     print('========================================')
-    print('1 - Listar Pedido')
-    print('2 - Adicionar Pedido')
-    print('3 - Buscar Pedido')
-    print('4 - Atualizar Pedido')
-    print('5 - Remover pedido')
+    print('1 - Cardápio')
+    print('2 - Listar Pedido')
+    print('3 - Adicionar Pedido')
+    print('4 - Buscar Pedido')
+    print('5 - Atualizar Pedido')
+    print('6 - Remover pedido')
     print('0 - Sair')
     print('========================================')
-    
+
     if(opcao == '1'): 
+        print()
+        print('CARDÁPIO ==================')
+        mostrar_cardapio()
+        print()
+        print("para fazer seu pedido, digite 3: ")
+
+    
+    elif(opcao == '2'): 
         print()
         print('LISTA DE PEDIDOS ======================')
         listarPedidos()
     
-    elif(opcao == '2'): 
+    elif(opcao == '3'): 
         print()
         print('ADICIONAR DE PEDIDOS ==================')
         nome = input('Nome:')
@@ -105,14 +133,14 @@ while(opcao != '0'):
         print('LISTA DE PEDIDOS ======================')
         listarPedidos()
     
-    elif(opcao == '3'): 
+    elif(opcao == '4'): 
          print()
          print('BUSCAR PEDIDO =========================')
          nome = input('digite o id do pedido:')
          print(buscarPedido(id))
 
     
-    elif(opcao == '4'): 
+    elif(opcao == '5'): 
         print()
         print('ATUALIZAR PEDIDO ======================')
 
@@ -126,10 +154,8 @@ while(opcao != '0'):
         else:
              print('pedido não encontrado!')
 
-
-
         
-    elif(opcao == '5'): 
+    elif(opcao == '6'): 
          print()
          print('REMOVER PEDIDO ========================')
 
@@ -145,10 +171,10 @@ while(opcao != '0'):
          print("LISTA DE PEDIDOS ==============")
          listarPedidos()
          
-
     
     elif(opcao != None): 
         print('Opção não existe')    
     
     print()
     opcao = input('Opção desejada:')
+
