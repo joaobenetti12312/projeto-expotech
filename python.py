@@ -180,9 +180,11 @@ def buscarPedido(id):
     pedido = cursor.fetchone()
 
     fechar_conexao(conexao)
-    input('\nPressione ENTER para voltar ao menu...')
+    
+    
 
     return pedido
+    
 
 
 # ========================================
@@ -217,6 +219,7 @@ def atualizarPedido(id, nome_cliente, pizza, preco):
     print('Pedido atualizado!')
 
     fechar_conexao(conexao)
+    input('\nPressione ENTER para voltar ao menu...')
 
 
 # ========================================
@@ -240,6 +243,7 @@ def removerPedido(id):
     print('Pedido removido!')
 
     fechar_conexao(conexao)
+    input('\nPressione ENTER para voltar ao menu...')
 
 
 # ========================================
@@ -352,6 +356,9 @@ Preço: R${pedido[3]}
         else:
 
             print('Pedido não encontrado')
+            
+            
+            
 
     # ========================================
     # ATUALIZAR PEDIDO
@@ -395,6 +402,7 @@ Preço: R${pedido[3]}
         else:
 
             print('Pedido não encontrado')
+            
 
     # ========================================
     # REMOVER PEDIDO
@@ -416,6 +424,9 @@ Preço: R${pedido[3]}
         else:
 
             print('Pedido não encontrado')
+            print()
+            input('\nPressione ENTER para voltar ao menu...')
+            
 
     # ========================================
     # OPÇÃO INVÁLIDA
