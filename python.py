@@ -62,7 +62,6 @@ def mostrar_cardapio():
 
     fechar_conexao(conexao)
 
-    input('\nPressione ENTER para voltar ao menu...')
 
 
 # ========================================
@@ -118,6 +117,8 @@ def adicionarPedido(nome_cliente, pizza, preco):
     print('Pedido cadastrado com sucesso!')
 
     fechar_conexao(conexao)
+    input('\nPressione ENTER para voltar ao menu...')
+
 
 
 # ========================================
@@ -179,6 +180,7 @@ def buscarPedido(id):
     pedido = cursor.fetchone()
 
     fechar_conexao(conexao)
+    input('\nPressione ENTER para voltar ao menu...')
 
     return pedido
 
@@ -270,6 +272,7 @@ while(opcao != '0'):
     if(opcao == '1'):
 
         mostrar_cardapio()
+        input('\nPressione ENTER para voltar ao menu...')
 
     # ========================================
     # LISTAR PEDIDOS
