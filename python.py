@@ -1,7 +1,7 @@
-pedidos = [
-    {'nome': 'Pizza de calabresa', 'preco': 40.00
-     }
-]
+# pedidos = [
+#     {'nome': 'Pizza de calabresa', 'preco': 40.00
+#      }
+# ]
 
 ##  CONEXÃO COM MYsql
 
@@ -18,7 +18,7 @@ def conectar():
         )
 
         if conexao.is_connected():
-            print("Conectado ao MySQL com sucesso!")
+            
             return conexao
 
     except Error as e:
@@ -29,7 +29,7 @@ def conectar():
 def fechar_conexao(conexao):
     if conexao and conexao.is_connected():
         conexao.close()
-        print("Conexão encerrada.")
+        
 
   #### CONEXÃO MYSQL ACIMA
 
@@ -39,11 +39,7 @@ def fechar_conexao(conexao):
 
 def mostrar_cardapio():
 
-    print("ENTROU NA FUNÇÃO")
-
     conexao = conectar()
-
-    #print(conexao)
 
     cursor = conexao.cursor()
 
@@ -53,128 +49,380 @@ def mostrar_cardapio():
 
     pizzas = cursor.fetchall()
 
-    #print(pizzas)
+    print()
+    print('======= CARDÁPIO =======')
 
     for pizza in pizzas:
-        print(f"ID: {pizza[0]} | Nome: {pizza[1]} | Preço: {pizza[2]}")
 
-        
+        print(
+            f'{pizza[0]} - '
+            f'{pizza[1]} - '
+            f'R${pizza[2]}'
+        )
 
-###################################################################################################
+    fechar_conexao(conexao)
 
+    input('\nPressione ENTER para voltar ao menu...')
+
+
+# ========================================
+# BUSCAR PIZZA
+# ========================================
+
+def buscarPizza(id):
+
+    conexao = conectar()
+
+    cursor = conexao.cursor()
+
+    sql = "SELECT * FROM cardapio WHERE id = %s"
+
+    valores = (id,)
+
+    cursor.execute(sql, valores)
+
+    pizza = cursor.fetchone()
+
+    fechar_conexao(conexao)
+
+    return pizza
+
+    input('\nPressione ENTER para voltar ao menu...')
+
+# ========================================
+# ADICIONAR PEDIDO
+# ========================================
+
+def adicionarPedido(nome_cliente, pizza, preco):
+
+    conexao = conectar()
+
+    cursor = conexao.cursor()
+
+    sql = """
+    INSERT INTO pedidos(nome_cliente, pizza, preco)
+    VALUES(%s, %s, %s)
+    """
+
+    valores = (
+        nome_cliente,
+        pizza,
+        preco
+    )
+
+    cursor.execute(sql, valores)
+
+    conexao.commit()
+
+    print()
+    print('Pedido cadastrado com sucesso!')
+
+    fechar_conexao(conexao)
+
+
+# ========================================
+# LISTAR PEDIDOS
+# ========================================
 
 def listarPedidos():
-    if(len(pedidos) == 0):
-        print('Não tem pedidos cadastrados')
-    for p in pedidos:
-        print(f'{p['nome']} ... R$ {p['preco']:.2f}')
-        
-        
-def adicionarPedido(pedido):
-    pedidos.append (pedido)
-    return True
+
+    conexao = conectar()
+
+    cursor = conexao.cursor()
+
+    sql = "SELECT * FROM pedidos"
+
+    cursor.execute(sql)
+
+    pedidos = cursor.fetchall()
+
+    print()
+    print('======= PEDIDOS =======')
+
+    if len(pedidos) == 0:
+
+        print('Não há pedidos cadastrados')
+
+    else:
+
+        for pedido in pedidos:
+
+            print(
+                f'''
+ID: {pedido[0]}
+Cliente: {pedido[1]}
+Pizza: {pedido[2]}
+Preço: R${pedido[3]}
+                '''
+            )
+
+    fechar_conexao(conexao)
+    input('\nPressione ENTER para voltar ao menu...')
 
 
-def buscarPedido(pedidoNome):
-    for i in range (len(pedidos)):
-        if pedidos[i]['nome']==pedidoNome:
-            return i
-    return None
+# ========================================
+# BUSCAR PEDIDO
+# ========================================
 
-def atualizarPedido(indice, pedido):
-    if indice >=0 and indice < len(pedido):
-        pedido[indice] = pedido
-        return True
-    return False
+def buscarPedido(id):
+
+    conexao = conectar()
+
+    cursor = conexao.cursor()
+
+    sql = "SELECT * FROM pedidos WHERE id = %s"
+
+    valores = (id,)
+
+    cursor.execute(sql, valores)
+
+    pedido = cursor.fetchone()
+
+    fechar_conexao(conexao)
+
+    return pedido
 
 
-def removerPedido(indice):
-    pedidos.pop(indice)
-    return True
+# ========================================
+# ATUALIZAR PEDIDO
+# ========================================
+
+def atualizarPedido(id, nome_cliente, pizza, preco):
+
+    conexao = conectar()
+
+    cursor = conexao.cursor()
+
+    sql = """
+    UPDATE pedidos
+    SET nome_cliente = %s,
+        pizza = %s,
+        preco = %s
+    WHERE id = %s
+    """
+
+    valores = (
+        nome_cliente,
+        pizza,
+        preco,
+        id
+    )
+
+    cursor.execute(sql, valores)
+
+    conexao.commit()
+
+    print('Pedido atualizado!')
+
+    fechar_conexao(conexao)
 
 
+# ========================================
+# REMOVER PEDIDO
+# ========================================
 
+def removerPedido(id):
+
+    conexao = conectar()
+
+    cursor = conexao.cursor()
+
+    sql = "DELETE FROM pedidos WHERE id = %s"
+
+    valores = (id,)
+
+    cursor.execute(sql, valores)
+
+    conexao.commit()
+
+    print('Pedido removido!')
+
+    fechar_conexao(conexao)
+
+
+# ========================================
+# MENU
+# ========================================
 
 opcao = None
+
 while(opcao != '0'):
+
     print()
-    print('========================================')
-    print('               MENU PIZZARIA')
-    print('========================================')
+    print('===================================')
+    print('========== MENU PIZZARIA ==========')
+    print('===================================')
     print('1 - Cardápio')
-    print('2 - Listar Pedido')
+    print('2 - Listar Pedidos')
     print('3 - Adicionar Pedido')
     print('4 - Buscar Pedido')
     print('5 - Atualizar Pedido')
-    print('6 - Remover pedido')
+    print('6 - Remover Pedido')
     print('0 - Sair')
-    print('========================================')
+    print('===================================')
 
-    if(opcao == '1'): 
-        print()
-        print('CARDÁPIO ==================')
+    opcao = input('Escolha: ')
+
+    # ========================================
+    # CARDÁPIO
+    # ========================================
+
+    if(opcao == '1'):
+
         mostrar_cardapio()
-        print()
-        print("para fazer seu pedido, digite 3: ")
 
-    
-    elif(opcao == '2'): 
-        print()
-        print('LISTA DE PEDIDOS ======================')
+    # ========================================
+    # LISTAR PEDIDOS
+    # ========================================
+
+    elif(opcao == '2'):
+
         listarPedidos()
-    
-    elif(opcao == '3'): 
-        print()
-        print('ADICIONAR DE PEDIDOS ==================')
-        nome = input('Nome:')
-        preco = float(input('Preço:'))
-        adicionarPedido({'nome': nome, 'preco': preco})
-        print()
-        print('LISTA DE PEDIDOS ======================')
-        listarPedidos()
-    
-    elif(opcao == '4'): 
-         print()
-         print('BUSCAR PEDIDO =========================')
-         nome = input('digite o id do pedido:')
-         print(buscarPedido(id))
 
-    
-    elif(opcao == '5'): 
+    # ========================================
+    # ADICIONAR PEDIDO
+    # ========================================
+
+    elif(opcao == '3'):
+
         print()
-        print('ATUALIZAR PEDIDO ======================')
+        print('======= ADICIONAR PEDIDO =======')
 
-        nome = input('digite o nome do produto:')
-        indice = buscarPedido(nome)
+        nome_cliente = input('Nome do cliente: ')
 
-        if indice is not None:
-            novo_nome = input('novo_nome:')
-            novo_preco = float(input('novo_preco:'))
-            atualizarPedido(indice, {'nome': novo_nome, 'preco': novo_preco})
+        # MOSTRA CARDÁPIO
+        mostrar_cardapio()
+
+        # ESCOLHER PIZZA
+        pizza_id = int(input('Digite o ID da pizza: '))
+
+        # BUSCA NO BANCO
+        pizza = buscarPizza(pizza_id)
+
+        if pizza is None:
+
+            print('Pizza não encontrada')
+
         else:
-             print('pedido não encontrado!')
 
-        
-    elif(opcao == '6'): 
-         print()
-         print('REMOVER PEDIDO ========================')
+            pizza_nome = pizza[1]
+            pizza_preco = float(pizza[2])
 
-         remove_pedido = input('digite o nome do pedido:')
-         indice = buscarPedido(remove_pedido)
+            print()
+            print('======= RESUMO =======')
 
-         if indice is not None:
-             removerPedido(indice)
-             print ('pedido excluido!')
-         else:
-             print('pedido não encontrado!')
+            print(f'Cliente: {nome_cliente}')
+            print(f'Pizza: {pizza_nome}')
+            print(f'Preço: R${pizza_preco}')
 
-         print("LISTA DE PEDIDOS ==============")
-         listarPedidos()
-         
-    
-    elif(opcao != None): 
-        print('Opção não existe')    
-    
-    print()
-    opcao = input('Opção desejada:')
+            adicionarPedido(
+                nome_cliente,
+                pizza_nome,
+                pizza_preco
+            )
+
+    # ========================================
+    # BUSCAR PEDIDO
+    # ========================================
+
+    elif(opcao == '4'):
+
+        print()
+        print('======= BUSCAR PEDIDO =======')
+
+        id = int(input('Digite o ID do pedido: '))
+
+        pedido = buscarPedido(id)
+
+        if pedido:
+
+            print()
+            print(
+                f'''
+ID: {pedido[0]}
+Cliente: {pedido[1]}
+Pizza: {pedido[2]}
+Preço: R${pedido[3]}
+                '''
+            )
+
+        else:
+
+            print('Pedido não encontrado')
+
+    # ========================================
+    # ATUALIZAR PEDIDO
+    # ========================================
+
+    elif(opcao == '5'):
+
+        print()
+        print('======= ATUALIZAR PEDIDO =======')
+
+        id = int(input('Digite o ID do pedido: '))
+
+        pedido = buscarPedido(id)
+
+        if pedido:
+
+            nome_cliente = input('Novo nome do cliente: ')
+
+            mostrar_cardapio()
+
+            pizza_id = int(input('Novo ID da pizza: '))
+
+            pizza = buscarPizza(pizza_id)
+
+            if pizza:
+
+                pizza_nome = pizza[1]
+                pizza_preco = float(pizza[2])
+
+                atualizarPedido(
+                    id,
+                    nome_cliente,
+                    pizza_nome,
+                    pizza_preco
+                )
+
+            else:
+
+                print('Pizza não encontrada')
+
+        else:
+
+            print('Pedido não encontrado')
+
+    # ========================================
+    # REMOVER PEDIDO
+    # ========================================
+
+    elif(opcao == '6'):
+
+        print()
+        print('======= REMOVER PEDIDO =======')
+
+        id = int(input('Digite o ID do pedido: '))
+
+        pedido = buscarPedido(id)
+
+        if pedido:
+
+            removerPedido(id)
+
+        else:
+
+            print('Pedido não encontrado')
+
+    # ========================================
+    # OPÇÃO INVÁLIDA
+    # ========================================
+
+    elif(opcao != '0'):
+
+        print('Opção inválida')
+
+
+print()
+print('Sistema encerrado!')
 
