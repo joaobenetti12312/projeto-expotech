@@ -1,12 +1,13 @@
-# pedidos = [
-#     {'nome': 'Pizza de calabresa', 'preco': 40.00
-#      }
-# ]
-
 ##  CONEXÃO COM MYsql
 
 import mysql.connector
 from mysql.connector import Error
+
+import os
+# ================================
+# CONEXAO COM O MYSQL
+# =================================
+
 
 def conectar():
     try:
@@ -29,15 +30,24 @@ def conectar():
 def fechar_conexao(conexao):
     if conexao and conexao.is_connected():
         conexao.close()
+
+
+
+# ========================
+# LIMPANDO CODIGO
+# =========================
         
+def limpar():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-  #### CONEXÃO MYSQL ACIMA
 
-############################################################# testes puxando cardapio do MYsql
-
+# ====================================
+# CARDAPIO
+# ====================================
 
 
 def mostrar_cardapio():
+    
 
     conexao = conectar()
 
@@ -61,7 +71,6 @@ def mostrar_cardapio():
         )
 
     fechar_conexao(conexao)
-
 
 
 # ========================================
@@ -144,6 +153,7 @@ def listarPedidos():
 
         print('Não há pedidos cadastrados')
 
+
     else:
 
         for pedido in pedidos:
@@ -156,9 +166,9 @@ Pizza: {pedido[2]}
 Preço: R${pedido[3]}
                 '''
             )
-
+   
     fechar_conexao(conexao)
-    input('\nPressione ENTER para voltar ao menu...')
+    
 
 
 # ========================================
@@ -180,10 +190,13 @@ def buscarPedido(id):
     pedido = cursor.fetchone()
 
     fechar_conexao(conexao)
+
+    return (pedido)
+  
     
     
 
-    return pedido
+    
     
 
 
@@ -253,6 +266,7 @@ def removerPedido(id):
 opcao = None
 
 while(opcao != '0'):
+    limpar()
 
     print()
     print('===================================')
@@ -285,6 +299,7 @@ while(opcao != '0'):
     elif(opcao == '2'):
 
         listarPedidos()
+        input('\nPressione ENTER para voltar ao menu...')
 
     # ========================================
     # ADICIONAR PEDIDO
@@ -356,6 +371,7 @@ Preço: R${pedido[3]}
         else:
 
             print('Pedido não encontrado')
+            input('\nPressione ENTER para voltar ao menu...')
             
             
             
@@ -370,7 +386,6 @@ Preço: R${pedido[3]}
         print('======= ATUALIZAR PEDIDO =======')
 
         id = int(input('Digite o ID do pedido: '))
-
         pedido = buscarPedido(id)
 
         if pedido:
@@ -398,10 +413,13 @@ Preço: R${pedido[3]}
             else:
 
                 print('Pizza não encontrada')
+                input('\nPressione ENTER para voltar ao menu...')
 
         else:
 
             print('Pedido não encontrado')
+            input('\nPressione ENTER para voltar ao menu...')
+            
             
 
     # ========================================
@@ -413,6 +431,7 @@ Preço: R${pedido[3]}
         print()
         print('======= REMOVER PEDIDO =======')
 
+        listarPedidos()
         id = int(input('Digite o ID do pedido: '))
 
         pedido = buscarPedido(id)
