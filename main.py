@@ -345,7 +345,6 @@ def atualizarPedido(id, nome_cliente, pizza, bebida, total):
 
     fechar_conexao(conexao)
 
-    input('\nPressione ENTER para voltar ao menu...')
 
 
 # ========================================
@@ -412,7 +411,7 @@ while(opcao != '0'):
 
 
     elif(opcao == '2'):
-
+        limpar()
         listarPedidos()
         input('\nPressione ENTER para voltar ao menu...')
 
@@ -455,12 +454,12 @@ while(opcao != '0'):
                     limpar()
 
                     print(f'\n{pizza[1]} adicionada ao carrinho!')
-                    print(f'Total atual: R${total}')
                     print('\n======= CARRINHO =======')
                     for item in carrinho:
                         print(f'- {item}')
 
-                    print(f'{pizza[1]} adicionada!')
+                    print(f'{pizza[1]} adicionada!') 
+                    print(f'Total atual: R${total}')
 
                 else:
 
@@ -474,51 +473,63 @@ while(opcao != '0'):
         # BEBIDA
         # =========================
 
-        bebida_nome = 'Sem bebida'
+        bebidas = []
 
-        mostrar_bebidas()
+        while True:
 
-        try:
+            mostrar_bebidas()
 
-            bebida_id = int(input('\nDigite o ID da bebida (0 para nenhuma): '))
+            try:
 
-            if bebida_id != 0:
+                bebida_id = int(input('\nDigite o ID da bebida (0 para finalizar): '))
+
+                if bebida_id == 0:
+                    break
 
                 bebida = buscarBebida(bebida_id)
 
                 if bebida:
 
-                    bebida_nome = bebida[1]
+                    bebidas.append(bebida[1])
+                    carrinho.append(bebida[1])
                     total += float(bebida[2])
                     limpar()
-                    print(f'\n{pizza[1]} adicionada ao carrinho!')
-                    print(f'Total atual: R${total}')
+
+                    print(f'\n{bebida[1]} adicionada ao carrinho!')
                     print('\n======= CARRINHO =======')
                     for item in carrinho:
                         print(f'- {item}')
 
-        except ValueError:
+                    print(f'{bebida[1]} adicionada!')
+                    print(f'Total atual: R${total}')
 
-            print('Digite apenas números!')
+                else:
+
+                    print('Bebida não encontrada')
+
+            except ValueError:
+
+                print('Digite apenas números!')
 
         # =========================
         # RESUMO
         # =========================
 
         pizzas_texto = ', '.join(carrinho)
+        bebidas_texto = ', '.join(bebidas)
 
         print()
         print('======= RESUMO =======')
 
         print(f'Cliente: {nome_cliente}')
         print(f'Pizzas: {pizzas_texto}')
-        print(f'Bebida: {bebida_nome}')
+        print(f'Bebidas: {bebidas_texto}')
         print(f'Total: R${total}')
 
         adicionarPedido(
             nome_cliente,
             pizzas_texto,
-            bebida_nome,
+            bebidas_texto,
             total
         )
 
@@ -574,48 +585,103 @@ Preço total: R${pedido[4]}
 
             nome_cliente = input('Novo nome do cliente: ')
 
+            pizzas= []
+            bebidas=[]
+            carrinho=[]
+            total = 0
+#pizzas
+            while True:
             
+                mostrar_pizzas()
 
-            mostrar_pizzas()
-            pizza_id = int(input('\nNovo ID da pizza: '))
-            pizza = buscarPizza(pizza_id)
+                try:
 
-            limpar()
+                    pizza_id = int(input('\nDigite o ID da pizza (0 para finalizar): '))
 
-            mostrar_bebidas()
-            print()
-            bebida_id = int(input('Novo ID da bebida: '))
-            bebida = buscarBebida(bebida_id)
+                    if pizza_id == 0:
+                        limpar()
+                        break
 
-            if pizza and bebida:
+                    pizza = buscarPizza(pizza_id)
 
-                pizza_nome = pizza[1]
-                pizza_preco = float(pizza[2])
+                    if pizza:
 
-                bebida_nome = bebida[1]
-                bebida_preco = float(bebida[2])
+                        pizzas.append(pizza[1])
+                        carrinho.append(pizza[1])
+                        total += float(pizza[2])
+                        limpar()
 
-                total = pizza_preco + bebida_preco
+                        print(f'\n{pizza[1]} adicionada ao carrinho!')
+                        print('\n======= CARRINHO =======')
+                        for item in carrinho:
+                            print(f'- {item}')
 
-                atualizarPedido(
-                    id,
-                    nome_cliente,
-                    pizza_nome,
-                    bebida_nome,
-                    total
-                )
+                        print(f'{pizza[1]} adicionada!') 
+                        print(f'Total atual: R${total}')
 
-            else:
+                    else:
 
-                print('Pizza ou bebida não encontrada')
-            input('\nPressione ENTER para voltar ao menu...')
+                        print('Pizza não encontrada')
 
+                except ValueError:
+
+                    print('Digite apenas números!')
+#bebidas
+            while True:
+
+                mostrar_bebidas()
+
+                try:
+
+                    bebida_id = int(input('\nDigite o ID da bebida (0 para finalizar): '))
+
+                    if bebida_id == 0:
+                        limpar()
+                        break
+
+                    bebida = buscarBebida(bebida_id)
+
+                    if bebida:
+
+                        bebidas.append(bebida[1])
+                        carrinho.append(bebida[1])
+                        total += float(bebida[2])
+                        limpar()
+
+                        print(f'\n{bebida[1]} adicionada ao carrinho!')
+                        print('\n======= CARRINHO =======')
+
+                        for item in carrinho:
+                            print(f'- {item}')
+
+                        print(f'{bebida[1]} adicionada!')
+                        print(f'Total atual: R${total}')
+
+                    else:
+
+                        print('Bebida não encontrada')
+
+                except ValueError:
+
+                    print('Digite apenas números!')
+
+            pizzas_texto = ', '.join(pizzas)
+            bebidas_texto = ', '.join(bebidas)
+
+            atualizarPedido(
+                id,
+                nome_cliente,
+                pizzas_texto,
+                bebidas_texto,
+                total
+            )            
+            
+            
         else:
 
-            print('Pedido não encontrado')
-        input('\nPressione ENTER para voltar ao menu...')
-            
-            
+            print('Pedido nao encontrado')
+
+        input('\nPrecione ENTER para voltar ao menu...')
 
     # ========================================
     # REMOVER PEDIDO
