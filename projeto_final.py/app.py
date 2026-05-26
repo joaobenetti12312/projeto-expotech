@@ -21,7 +21,7 @@ def conectar():
         host='localhost',
         user='root',
         password='1234',
-        database='teste_pizzaria'
+        database='pizzatech_bd'
     )
 
 
