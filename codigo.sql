@@ -1,54 +1,124 @@
-CREATE DATABASE pizzatech_bd;
-USE pizzatech_bd;
+-- CREATE DATABASE trueteste;
+-- USE trueteste;
+
+-- -- =============================================
+-- -- CLIENTES
+-- -- =============================================
+-- CREATE TABLE clientes (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     nome VARCHAR(100) NOT NULL,
+--     telefone VARCHAR(20) NOT NULL,
+--     endereco VARCHAR(200)
+-- );
+
+-- -- =============================================
+-- -- PIZZAS
+-- -- =============================================
+-- CREATE TABLE pizzas (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     nome VARCHAR(100) NOT NULL,
+--     preco DECIMAL(10,2) NOT NULL,
+--     disponivel BOOLEAN DEFAULT TRUE
+-- );
+
+-- -- =============================================
+-- -- BEBIDAS
+-- -- =============================================
+-- CREATE TABLE bebidas (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     nome VARCHAR(100) NOT NULL,
+--     preco DECIMAL(10,2) NOT NULL,
+--     disponivel BOOLEAN DEFAULT TRUE
+-- );
 
 
+-- -- =============================================
+-- -- INSERTS DE PIZZAS
+-- -- =============================================
 
-CREATE TABLE pizzas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100),
-    preco DECIMAL(10,2)
-);
+-- INSERT INTO pizzas (nome, preco, disponivel)
+-- VALUES
+-- ('Calabresa', 45.00, TRUE),
+-- ('Mussarela', 40.00, TRUE),
+-- ('Frango com Catupiry', 52.00, TRUE),
+-- ('Portuguesa', 55.00, TRUE),
+-- ('Quatro Queijos', 58.00, TRUE),
+-- ('Pepperoni', 60.00, TRUE),
+-- ('Chocolate', 48.00, TRUE),
+-- ('Baiana', 53.00, TRUE),
+-- ('Atum', 50.00, TRUE),
+-- ('Moda da Casa', 65.00, TRUE);
 
-CREATE TABLE bebidas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100),
-    preco DECIMAL(10,2)
-);
+-- =============================================
+-- INSERTS DE BEBIDAS
+-- =============================================
 
-CREATE TABLE pedidos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome_cliente VARCHAR(100),
-    pizza VARCHAR(100),
-    bebida VARCHAR(100),
-    total DECIMAL(10,2)
-);
+-- INSERT INTO bebidas (nome, preco, disponivel)
+-- VALUES
+-- ('Coca-Cola 2L', 15.00, TRUE),
+-- ('Guaraná Antártica 2L', 13.00, TRUE),
+-- ('Fanta Laranja 2L', 13.00, TRUE),
+-- ('Sprite 2L', 13.00, TRUE),
+-- ('Coca-Cola Lata', 6.00, TRUE),
+-- ('Guaraná Lata', 5.50, TRUE),
+-- ('Suco de Laranja', 8.00, TRUE),
+-- ('Água Mineral', 4.00, TRUE),
+-- ('H2OH!', 7.00, TRUE),
+-- ('Red Bull', 12.00, TRUE);
 
+-- -- =============================================
+-- -- PEDIDOS
+-- -- =============================================
+-- CREATE TABLE pedidos (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     cliente_id INT NOT NULL,
+--     total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+--     status_pedido VARCHAR(50) NOT NULL DEFAULT 'Pendente',
+--     data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-INSERT INTO bebidas (nome, preco)
-VALUES
-('Coca-Cola 2L', 15.00),
-('Coca-Cola Lata', 7.00),
-('Guaraná 2L', 13.00),
-('Fanta Laranja 2L', 14.00),
-('Sprite 2L', 14.00),
-('Água', 5.00),
-('Suco Natural', 10.00),
-('Monster', 9.00),
-('Cerveja Lata', 8.00);
+--     CONSTRAINT fk_pedido_cliente
+--         FOREIGN KEY (cliente_id)
+--         REFERENCES clientes(id)
+--         ON DELETE RESTRICT
+-- );
 
+-- -- =============================================
+-- -- ITENS DO PEDIDO
+-- -- =============================================
+-- CREATE TABLE itens_pedido (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     pedido_id INT NOT NULL,
+--     pizza_id INT NULL,
+--     bebida_id INT NULL,
+--     quantidade INT NOT NULL DEFAULT 1,
 
-INSERT INTO pizzas (nome, preco)
-VALUES
-('Calabresa', 40.00),
-('Mussarela', 35.00),
-('Portuguesa', 45.00),
-('Frango com Catupiry', 48.00),
-('Quatro Queijos', 52.00),
-('Baiana', 50.00),
-('Pepperoni', 55.00),
-('Chocolate', 42.00),
-('Romeu e Julieta', 44.00),
-('Marguerita', 47.00),
-('Bacon', 53.00),
-('Palmito', 49.00),
-('Napolitana', 45.00);
+--     CONSTRAINT fk_item_pedido
+--         FOREIGN KEY (pedido_id)
+--         REFERENCES pedidos(id)
+--         ON DELETE CASCADE,
+
+--     CONSTRAINT fk_item_pizza
+--         FOREIGN KEY (pizza_id)
+--         REFERENCES pizzas(id)
+--         ON DELETE SET NULL,
+
+--     CONSTRAINT fk_item_bebida
+--         FOREIGN KEY (bebida_id)
+--         REFERENCES bebidas(id)
+--         ON DELETE SET NULL
+-- );
+
+-- -- =============================================
+-- -- ÍNDICES
+-- -- =============================================
+-- CREATE INDEX idx_pedidos_cliente
+-- ON pedidos(cliente_id);
+
+-- CREATE INDEX idx_itens_pedido
+-- ON itens_pedido(pedido_id);
+
+-- CREATE INDEX idx_itens_pizza
+-- ON itens_pedido(pizza_id);
+
+-- CREATE INDEX idx_itens_bebida
+-- ON itens_pedido(bebida_id);
