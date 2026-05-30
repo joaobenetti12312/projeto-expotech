@@ -653,7 +653,7 @@ function goStep(n){
   });
 }
 function step1next(){if(!document.getElementById('cli-sel').value){toast('Selecione um cliente.','err');return;}goStep(2);}
-function step2next(){if(!carrinhoP.length){toast('Adicione pelo menos uma pizza.','err');return;}goStep(3);}
+function step2next(){if(!carrinhoP.length){toast('Ops, você esqueceu de adicionar uma pizza! 🍕😅','err');return;}goStep(3);}
 function step3next(){renderResumo();goStep(4);}
 
 function adicionarItem(tipo){
@@ -763,7 +763,7 @@ async function salvarEdicaoPedido(){
   const cliente_id=parseInt(document.getElementById('edit-cli-sel').value);
   const status=document.getElementById('edit-status').value;
   if(!cliente_id){toast('Selecione um cliente.','err');return;}
-  if(!editCarrP.length){toast('Adicione pelo menos uma pizza.','err');return;}
+  if(!editCarrP.length){toast('Ops, você esqueceu de adicionar uma pizza! 🍕😅','err');return;}
   const itens=[...editCarrP.map(it=>({pizza_id:it.pizza_id,bebida_id:null,quantidade:it.quantidade})),...editCarrB.map(it=>({pizza_id:null,bebida_id:it.bebida_id,quantidade:it.quantidade}))];
   const total=calcEditTotal();
   const btn=document.getElementById('btn-salvar-pedido');
