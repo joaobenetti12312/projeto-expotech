@@ -15,7 +15,7 @@ def conectar():
         host='localhost',
         user='root',
         password='1234',
-        database='pteste'
+        database='banco_de_dados_pizzatech'
     )
 
 
@@ -86,8 +86,6 @@ def deletar_cliente(id):
 def listar_pizzas():
     conexao = conectar()
     cursor  = conexao.cursor(dictionary=True)
-    # Retorna apenas as pizzas disponíveis por padrão
-    # Use ?todas=true para listar todas independente da disponibilidade
     todas = request.args.get('todas', 'false').lower() == 'true'
     if todas:
         cursor.execute('SELECT * FROM pizzas ORDER BY nome')
@@ -101,7 +99,7 @@ def listar_pizzas():
 @app.route('/pizzas/<int:id>/disponibilidade', methods=['PATCH'])
 def atualizar_disponibilidade_pizza(id):
     dados      = request.json
-    disponivel = dados['disponivel']  # True ou False
+    disponivel = dados['disponivel']
     conexao    = conectar()
     cursor     = conexao.cursor()
     cursor.execute('UPDATE pizzas SET disponivel=%s WHERE id=%s', (disponivel, id))
@@ -118,7 +116,6 @@ def atualizar_disponibilidade_pizza(id):
 def listar_bebidas():
     conexao = conectar()
     cursor  = conexao.cursor(dictionary=True)
-    # Mesmo comportamento das pizzas: filtra disponíveis por padrão
     todas = request.args.get('todas', 'false').lower() == 'true'
     if todas:
         cursor.execute('SELECT * FROM bebidas ORDER BY nome')
@@ -165,7 +162,6 @@ def listar_pedidos():
     pedidos = cursor.fetchall()
 
     for pedido in pedidos:
-        # Converte data_pedido para string (não é serializável em JSON por padrão)
         if pedido['data_pedido']:
             pedido['data_pedido'] = pedido['data_pedido'].strftime('%Y-%m-%d %H:%M:%S')
 
@@ -198,7 +194,7 @@ def listar_pedidos():
 def criar_pedido():
     dados      = request.json
     cliente_id = dados['cliente_id']
-    itens      = dados['itens']   # lista de {pizza_id ou bebida_id, quantidade}
+    itens      = dados['itens']
     total      = dados['total']
     status     = dados.get('status_pedido', 'Em preparo')
 
@@ -212,11 +208,10 @@ def criar_pedido():
     pedido_id = cursor.lastrowid
 
     for item in itens:
-        pizza_id  = item.get('pizza_id')
-        bebida_id = item.get('bebida_id')
+        pizza_id   = item.get('pizza_id')
+        bebida_id  = item.get('bebida_id')
         quantidade = item.get('quantidade', 1)
 
-        # Garante que cada item tem exatamente um tipo (pizza OU bebida)
         if (pizza_id is None) == (bebida_id is None):
             conexao.rollback()
             cursor.close(); conexao.close()
@@ -252,8 +247,6 @@ def atualizar_pedido(id):
         (cliente_id, total, status, id)
     )
 
-    # Remove itens antigos e recria
-    # (CASCADE faria isso no DELETE do pedido, mas aqui o pedido continua existindo)
     cursor.execute('DELETE FROM itens_pedido WHERE pedido_id=%s', (id,))
 
     for item in itens:
@@ -284,8 +277,6 @@ def atualizar_pedido(id):
 def deletar_pedido(id):
     conexao = conectar()
     cursor  = conexao.cursor()
-    # Não precisa deletar itens_pedido manualmente:
-    # o ON DELETE CASCADE na FK faz isso automaticamente
     cursor.execute('DELETE FROM pedidos WHERE id=%s', (id,))
     conexao.commit()
     cursor.close(); conexao.close()
@@ -293,7 +284,7 @@ def deletar_pedido(id):
 
 
 # =====================================
-# PEDIDOS — ATUALIZAR APENAS STATUS
+# PEDIDOS — ATUALIZAR STATUS
 # =====================================
 
 @app.route('/pedidos/<int:id>/status', methods=['PATCH'])
